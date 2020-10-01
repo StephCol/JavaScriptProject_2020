@@ -1,0 +1,478 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="index.css">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        
+    </head>
+    <body onload="var time = start()">
+            
+            
+        <div id = "icons">
+            
+             <h1>Get your insurance quote here!</h1>
+            
+            <img src="person.png" id="person" width=50px height=50px class="car">
+            <img src="dash.png" id="personDash" width=160px height=50px >
+                
+                
+            <img src="car.png"  id="car" width=50px height=50px>
+            <img src="dash.png" id="carDash" width=160px height=50px >
+                
+            <img src="clipboard.png" id="clipboard" width=50px height=50px>
+             <img src="dash.png" id="clipboardDash" width=160px height=50px >
+                
+            <img src="euro.png" id="euro" width=50px height=50px>   
+         
+            
+        </div>
+            
+        
+      
+        <div  id="root">  
+        
+        <div id="formBody">
+        
+                
+        <div id="custDetails">      
+               
+            <h2>Your Details </h2>
+
+            <div class="container">
+                
+                   
+            
+            <form >
+                 
+                
+                <div class="row">
+                    <div class="col-25">
+                      <label for="name">Name</label>
+                    </div>
+                    <div class="col-75">
+                      <input type="text" name="name" id="name" v-model="name"  placeholder="Enter Full Name" onkeypress="return isLetter(event);" onchange="return changeBorder(this.name)" >
+                
+                    </div>
+                  </div>
+                
+                  
+                  <div class="row">
+                    <div class="col-25">
+                      <label for="age">Age</label>
+                    </div>
+                    <div class="col-75">
+                      <input type="text" name="age" id="age" v-model="values.age"  maxlength="2" placeholder="e.g. 35"  onkeypress="return isNumber(event)" onchange="return changeBorder(this.name)" @change="getAgePrice" >
+                         <div class="row" style="display: none; font-size: 14px; color: red;" id="ageError" >
+                    </div>
+                        
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-25">
+                      <label for="gender" >Gender <span style="color: green" >*</span></label>
+                    </div>
+                    <div class="col-75">
+                        <div id="genderRad">
+                      Male<input type="radio" id="gender" name="gender" value="Male"  @change="getGenderPrice('Male')"  checked>
+                      Female<input type="radio" id="gender"  name="gender" value="Female" @change="getGenderPrice('Female')" onchange="return changeBorder(this.name)">
+                            <div class="row" style="display: none; font-size: 14px; color: red;" id="genderError" >
+                    </div>
+                  
+                    </div>
+                  </div>
+                
+                   <div class="row">
+                        <div class="col-25">
+                          <label for="phone">Telephone</label>
+                        </div>
+                        <div class="col-75">
+                          <input type="text"  name="phone" id="phone" v-model="phone" maxlength="10" placeholder="e.g. 0871234567"  onkeypress="return isNumber(event)" onchange="return changeBorder(this.name)">
+                           <div class="row" style="display: none; font-size: 14px; color: red;" id="phoneError" >
+                    </div>
+                        </div>
+                      </div>
+                
+                 <div class="row">
+                    <input type="button" onclick="custToCar()"  v-on:click="getTotal" value="Next">
+                
+                </div>
+                      </div>
+            
+            </form>
+            
+            </div>
+            
+        </div>                
+            
+            
+            
+            <div id="carDetails">      
+               
+            <h2>Car Details </h2>
+
+            <div class="container2">
+            
+            <form >
+                 
+                
+                <div class="row">
+                    
+                    <div class="col-12">                      
+                            <label for="make">Make</label>
+                    </div>
+                    
+                    <div class="col-20">                        
+                            <select  name="make" id="make" v-model="make" onchange="getModels(); return changeBorder(this.name);" >
+                                <option value="" disabled selected style="color: lightgray">Select Make</option>
+                                <option >Toyota</option>   
+                                 <option >Nissan</option>
+                                 <option >Ford</option>
+                                 <option >Audi</option>
+                                <option >Renault</option>
+                            </select>                      
+                    </div>
+                    
+                    <div class="col-12">
+                            <label  for="model">Model <span style="color: green">*</span></label>
+                    </div>
+                    
+                    <div class="col-20"> 
+                            <select name="model" id="model" @change="setModel" onchange=" return changeBorder(this.name);">
+                                 <option value="" disabled selected style="color: lightgray" >Select Model</option>    
+                            </select>
+                    </div>
+                    
+                    <div class="col-20
+                                ">
+                        <label for="fuel">Fuel Type <span style="color: green">*</span></label>
+                    </div>
+                    
+                    <div class="col-20">
+                               <select name="fuel" id="fuel" @change="getFuelPrice" onchange=" return changeBorder(this.name);">
+                                    <option value="" disabled selected style="color: lightgray" >Select Fuel</option>
+                                    <option>Diesel</option> 
+                                    <option>Petrol</option>
+                                    <option>Hybrid</option>
+                                </select>
+                    </div>
+                    
+                </div>
+                
+                
+                <div class="row">
+                    
+                     <div class="col-12">
+                          <label for="miles">Mileage (km)</label>
+                    </div>
+                    
+                    <div class="col-20">
+                          <input type="text" name="miles" id="miles" v-model="values.miles" maxlength="8" placeholder="e.g. 100000" onkeypress="return isNumber(event)" @change="getMilesPrice" onchange=" return changeBorder(this.name);" >
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="carAge">Car Age</label>
+                    </div>
+                    
+                    <div class="col-20">   
+                        <input type="text" name="carAge" id="carAge" v-model="values.carAge"  maxlength="2" placeholder="e.g. 3"  onkeypress="return isNumber(event)" @change="getCarAgePrice" onchange=" return changeBorder(this.name);">
+                     </div>
+                    <div class="col-20">
+                        <label for="claims">Claims Free<span style="color: green">*</span>   <a href="#" data-toggle="tooltip" data-placement="top" title="Please enter how many years of a NO CLAIMS BONUS you currently have"><img src="q.png" style="height: 16px; margin-left: 6px;"></a> </label>
+                    </div>
+                    
+                    <div class="col-20">
+                                <select name="claims" id="claims" @change="getClaimsPrice" onchange=" return changeBorder(this.name);">  
+                                    <option value="" disabled selected style="color: lightgray">Select Years</option>
+                                    <option>1</option> 
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>>=5</option>
+                                </select>
+                    </div>
+                    
+                </div>
+                
+                
+                
+                <div class="row">
+                    
+                    <div class="col-12">
+                      <label for="security">Security<span style="color: green">*</span><a href="#" data-toggle="tooltip" data-placement="top" title="The type of security system in your car"><img src="q.png" style="height: 16px; margin-left: 6px;" ></a></label>
+                    </div>
+                    
+                    <div class="col-35">
+                        <div id="genderRad" style="font-size: 15px">
+                              <input type="radio" id="security" name="security" value="None"checked="checked" @change="getSecurityPrice('None')"  checked>None<br>
+                             <input type="radio" id="security" name="security" value="Alarm" @change="getSecurityPrice('Alarm')" > Alarm<br>  
+                              <input type="radio" id="security" name="security" value="Immobiliser" @change="getSecurityPrice('Immobiliser')">Immobiliser<br>
+                              <input type="radio" id="security" name="security" value="Alarm, Immobiliser" @change="getSecurityPrice('Alarm, Immobiliser')" >Alarm &amp; Immobiliser<br>
+                              <input type="radio" id="security" name="security" value="Tracker, Alarm, Immobiliser"  @change="getSecurityPrice('Tracker, Alarm, Immobiliser')" >Tracking device, Alarm &amp; Immobiliser
+                            
+                      </div>
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="usage">Car Usage<span style="color: green">*</span><a href="#" data-toggle="tooltip" data-placement="top" title="This field is required"><img src="q.png" style="height: 16px; margin-left: 6px;"></a></label>
+                    </div>
+                    
+                    <div class="col-30">
+                        <div id="genderRad" style="font-size: 15px">
+                              <input type="radio" id="usage" name="usage" value="Social, Domestic, Pleasure" @change="getUsagePrice('Social, Domestic, Pleasure')" checked>Social, Domestic &amp; Pleasure <br>
+                              <input type="radio" id="usage" name="usage" value="Class 1" @change="getUsagePrice('Class 1')">Class 1 Use
+                       
+                      </div>
+                    </div>
+                    
+                    
+                    
+                    
+                  </div>
+                
+                <div class="row">
+                    
+                     <div class="col-12">
+                          <label for="value">Car Value<span style="color: green">*</span><a href="#" data-toggle="tooltip" data-placement="top" title="Provide an estimate of the value of your car"><img src="q.png" style="height: 16px; margin-left: 4px;"></a> </label>
+                    </div>
+                    
+                    <div class="col-20">
+                          <input type="text" name="value" id="value" v-model="values.value" maxlength="8" placeholder="e.g. 35600" onkeypress="return isNumber(event)" @change="getCarValuePrice" onchange=" return changeBorder(this.name);">
+                    </div>
+                    
+                    
+                     <div class="col-50">
+                           <input type="button" onclick="carToPolicy()"  value="Next">
+                         <input type="button" onclick="carToCust()"  value="Back">
+                    </div>
+                   
+                    
+                    
+                  </div>
+                
+                
+            
+            </form>
+            
+            </div>
+            
+        </div>                
+
+           
+            <div id="policyDetails">      
+               
+            <h2>Policy Details </h2>
+
+            <div class="container">
+            
+            <form >
+                 
+                
+                <div class="row">
+                    <div class="col-45">
+                      <label for="date">Policy Start Date <span style="color: green">*</span>   <a href="#" data-toggle="tooltip" data-placement="top" title="Please enter a future date in the format dd/mm/yyyy"><img src="q.png" style="height: 16px; margin-left: 6px;" ></a></label>
+                    </div>
+                    <div class="col-45">
+                      <input type="text" name="date" id="date" maxlength="10" value="" onkeypress="return isDateChar(event)" onchange=" return changeBorder(this.name);" v-model='date' >
+                        <div class="row" style="display: none; font-size: 14px; color: red;" id="dateError" >
+                    </div>
+                        
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-45">
+                      <label for="coverType">Type of Cover <span style="color: green">*</span>   <a href="#" data-toggle="tooltip" data-placement="top" title="Policy type is required"><img src="q.png" style="height: 16px; margin-left: 6px;"></a></label>
+                    </div>
+                    <div class="col-45">
+                        <select name="coverType" id="coverType"  @change="getCoverPrice" onchange=" return changeBorder(this.name);">  
+                                    <option disabled selected style="color: lightgray">Select Policy Type</option>
+                                    <option>Fully Comprehensive</option> 
+                                    <option>Third Party Fire &amp; Theft</option> 
+                        </select></div>
+                  </div>
+                
+                  
+                 <div class="row">
+                    <input type="button" onclick="policyToStatement(); end()" value="Calculate"> <input type="button" onclick="policyToCar() "  value="Back">
+                
+                </div>
+            
+            </form>
+            
+            </div>
+            
+            
+
+            </div>
+            
+            <div id="statementDetails">      
+               
+            <h2>Insurance Policy for {{ name }}</h2>
+
+            <div class="container3" >
+                
+                <h4>Customer Details</h4>
+                
+                <div class="row">
+                    <div class="col-details   col-input">
+                      <p>Name</p>
+                    </div>
+                    <div class="col-details">
+                       {{ name }}
+                    </div>
+                    <div class="col-details  col-input">
+                      <p>Age</p>
+                    </div>
+                    <div class="col-details ">
+                       {{ values.age }}
+                    </div>
+                </div>
+                  
+                   
+                <div class="row">
+                    <div class="col-details  col-input">
+                      <p>Gender</p>
+                    </div>
+                    <div class="col-details ">
+                       {{ values.gender }}
+                    </div>
+                    <div class="col-details  col-input">
+                      <p>Contact No.</p>
+                    </div>
+                    <div class="col-details ">
+                       {{ phone }}
+                    </div>
+                </div>
+                    
+                <h4>Car Details</h4>
+                    
+                <div class="row">
+                    <div class="col-details  col-input">
+                      <p>Make</p>
+                    </div>
+                    <div class="col-details ">
+                       {{ make }}
+                    </div>
+                    <div class="col-details col-input">
+                      <p>Model</p>
+                    </div>
+                    <div class="col-details ">
+                       {{ model }}
+                    </div>
+                </div>
+                    
+                <div class="row">
+                    <div class="col-details  col-input">
+                      <p>Fuel Type</p>
+                    </div>
+                    <div class="col-details ">
+                       {{ values.fuel }}
+                    </div>
+                    <div class="col-details   col-input">
+                      <p>Mileage (km)</p>
+                    </div>
+                    <div class="col-details">
+                       {{ values.miles }}
+                    </div>
+                </div>
+                    
+                <div class="row">
+                    <div class="col-details col-input">
+                      <p>Car Age</p>
+                    </div>
+                    <div class="col-details ">
+                       {{ values.carAge }}
+                    </div>
+                    <div class="col-details col-input">
+                      <p>Car Value</p>
+                    </div>
+                    <div class=".col-details  ">
+                       {{ values.value }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-details  col-input">
+                      <p>No Claims Bonus</p>
+                    </div>
+                    <div class="col-detailsLarge ">
+                       {{ values.claims }}
+                    </div>
+                </div>
+                
+                
+                    
+                 <div class="row">
+                    <div class="col-details col-input">
+                      <p>Security</p>
+                    </div>
+                    <div class="col-detailsLarge  ">
+                       {{ values.security }}
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col-details col-input">
+                      <p>Car Usage</p>
+                    </div>
+                    <div class="col-detailsLarge  ">
+                       {{ values.usage }}
+                    </div>
+                </div>
+                
+                <h4>Policy Details</h4>
+                    
+                <div class="row">
+                    <div class="col-details   col-input">
+                      <p>Start Date</p>
+                    </div>
+                    <div class="col-details">
+                       {{ date }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-details col-input">
+                      <p>Type of Cover</p>
+                    </div>
+                    <div class="col-detailsLarge  ">
+                       {{ values.coverType }}
+                    </div>
+                </div>
+               
+            
+            </div>
+                
+                
+            <div class="container4">
+                
+                
+                <h4>Policy Total</h4>
+                
+                <p style = "font-size: 18px;">&euro; {{ total }}</p>
+                 
+                
+                </div>    
+        </div>
+            
+        
+            
+            
+    </div>
+        
+        <div id="footer">
+            
+                <h3>Time Remaining </h3>
+            
+                <input style="width:120px; height: 10px; background-color: transparent; margin: 5px 5px 0px 5px;  border: none; color: grey; font-size: 17px;" type="text" disabled name="time" value="04:00" id="timer">
+
+                <h3>Running Total  </h3>
+
+                <input style="width:120px; height: 10px; background-color: transparent; margin: 5px 5px 0px 5px;  border: none; color: grey; font-size: 17px;" type="text" disabled name="total" v-model="total" > 
+
+        </div>
+    </div>
+               
+              
+        
+        <script src="index.js"></script> 
+        
+    </body>
+</html>
